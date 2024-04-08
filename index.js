@@ -2,11 +2,11 @@
 const express = require('express')
 const app = express()
 const port = 3000
+const path = require('path')
 
 const coinRoutes = require('./routes/coin')
 const errorController = require('./controllers/error')
 
-const path = require('path')
 // ============== End Require ==================
 
 // View Engine
@@ -30,6 +30,10 @@ app.use((error, req, res, next) => {
     res.redirect('/500')
 })
 
-app.listen(port, () => {
-    console.log('App Running')
+const server = app.listen(port)
+
+const io = require('./socket').init(server)
+
+io.on('connection', socket => {
+    console.log('Client connected')
 })
