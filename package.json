@@ -4,15 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js & npm run scss",
+    "scss": "sass --watch scss/main.scss public/styles/main.css"
   },
   "author": "Har",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^3.1.9",
     "express": "^4.19.2",
     "install": "^0.13.0",
     "nodemon": "^3.1.0",
     "npm": "^10.5.1",
+    "sass": "^1.74.1",
     "sequelize": "^6.37.2",
     "socket.io": "^4.7.5",
     "sqlite3": "^5.1.7"
