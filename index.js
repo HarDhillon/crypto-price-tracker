@@ -4,6 +4,9 @@ const app = express()
 const port = 3000
 const path = require('path')
 
+const sequelize = require('./util/database')
+const Coin = require('./models/coin')
+
 const coinRoutes = require('./routes/coin')
 const errorController = require('./controllers/error')
 
@@ -42,6 +45,9 @@ setInterval(async () => {
     }
 }, 2000);
 
+// ! Dev only
+// sequelize.sync()
+sequelize.sync({ force: true })
 
 const server = app.listen(port)
 
