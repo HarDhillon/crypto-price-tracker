@@ -1,9 +1,45 @@
-<%- include('../includes/head.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
 
-<body>
-    <main>
-        <h1>Hello World</h1>
-    </main>
-</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('coinDataUpdated', (updatedCoinData) => {
+            // Update all elements with class name 'coin-name' with data.coinName
+            const coinNameElements = document.querySelectorAll('.coin-name');
+            coinNameElements.forEach((element, index) => {
+                element.textContent = updatedCoinData[index].name;
+            });
+
+            // Update all elements with class name 'coin-price' with data.coinPrice
+            const coinPriceElements = document.querySelectorAll('.coin-price');
+            coinPriceElements.forEach((element, index) => {
+                element.textContent = updatedCoinData[index].price
+            });
+           
+        });
+    </script>
+
+    <body>
+        <main>
+            <div>
+                <% if (coinData.length > 0) { %>
+                    <% for (let coin of coinData) { %>
+                        <div>
+                            <h4 class="coin-name"><%= coin.baseToken.name %></h4>
+                            <p class="coin-price">$<%= coin.priceUsd %></p>
+                            <p></p>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+        </main>
+    </body>
 
 <%- include('../includes/end.ejs') %>

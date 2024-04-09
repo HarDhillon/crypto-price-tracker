@@ -7,6 +7,7 @@ const path = require('path')
 const coinRoutes = require('./routes/coin')
 const errorController = require('./controllers/error')
 
+
 // ============== End Require ==================
 
 // View Engine
@@ -29,6 +30,18 @@ app.use((error, req, res, next) => {
     console.log(error)
     res.redirect('/500')
 })
+
+const { coinApi } = require('./api/coinApi');
+
+// Call coinApi every 2 second
+setInterval(async () => {
+    try {
+        await coinApi();
+    } catch (error) {
+        console.error('Error fetching coin data:', error);
+    }
+}, 2000);
+
 
 const server = app.listen(port)
 
