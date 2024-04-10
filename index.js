@@ -6,6 +6,9 @@ const path = require('path')
 
 const sequelize = require('./util/database')
 const Coin = require('./models/coin')
+const User = require('./models/user')
+const UserCoin = require('./models/user-coin')
+
 
 const coinRoutes = require('./routes/coin')
 const errorController = require('./controllers/error')
@@ -44,6 +47,9 @@ setInterval(async () => {
         console.error('Error fetching coin data:', error);
     }
 }, 2000);
+
+User.hasMany(Coin)
+Coin.belongsToMany(User, { through: UserCoin })
 
 // ! Dev only
 // sequelize.sync()
