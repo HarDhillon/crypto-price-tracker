@@ -7,34 +7,29 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><%= pageTitle %></title>
     <link rel="stylesheet" href="/styles/main.css">
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-        socket.on('coinDataUpdated', (updatedCoinData) => {
-            // Update all elements with class name 'coin-name' with data.coinName
-            const coinNameElements = document.querySelectorAll('.coin-name');
-            coinNameElements.forEach((element, index) => {
-                element.textContent = updatedCoinData[index].name;
-            });
-
-            // Update all elements with class name 'coin-price' with data.coinPrice
-            const coinPriceElements = document.querySelectorAll('.coin-price');
-            coinPriceElements.forEach((element, index) => {
-                element.textContent = updatedCoinData[index].price
-            });
-           
-        });
-    </script>
+    <%- include('../includes/coinFetchScript.ejs') %>
 
     <body>
         <main>
             <div>
-                <% if (coinData.length > 0) { %>
+                <form action="/add-coin" method="POST" >
+                    <label>Track New Coin (Enter Token Address)</label>
+                    <input name="tokenAddress" placeholder="0xe6f4a40156C9E8cb99FDEdeCF84" type="text"/>
+                    <button type="submit">Track</button>
+                </form>
+            </div>
+            <div>
+                <% if (coinData && coinData.length > 0) { %>
                     <% for (let coin of coinData) { %>
                         <div>
                             <h4 class="coin-name"><%= coin.baseToken.name %></h4>
                             <p class="coin-price">$<%= coin.priceUsd %></p>
-                            <p></p>
+
+                            <form action="/buy-coin" method="POST">
+                                <label>My Initial Buy Price</label>
+                                <input type="number"/>
+                                <button>Buy</button>
+                            </form>
                         </div>
                     <% } %>
                 <% } %>
