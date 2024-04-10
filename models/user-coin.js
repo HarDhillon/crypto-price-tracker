@@ -8,6 +8,10 @@ const UserCoin = sequelize.define('userCoin', {
         allowNull: false,
         primaryKey: true
     },
+    buyPrice: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
+    }
 })
 
 module.exports = UserCoin

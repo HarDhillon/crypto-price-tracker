@@ -12,9 +12,9 @@ const Coin = sequelize.define('coin', {
         type: Sequelize.STRING,
         allowNull: false,
     },
-    price: {
-        type: Sequelize.DOUBLE,
-        allowNull: false,
+    token: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 })
 
