@@ -1,11 +1,18 @@
 const io = require('../socket')
+const Coin = require('../models/coin')
 
-const coinApi = async () => {
-    // TODO Fetch coins from database to know which to query
-
-    const endPoints = ['0xa7480aafa8ad2af3ce24ac6853f960ae6ac7f0c4', '0x35ca6a41252f7e0bccdc1d7b2d5b6e2e35a7b483', '0xef64da9c4840b2c88b2f73b79db3c4e51e27f53a', '0xdfee6698831ff2ec5d7f5080a4c9ae44e4e86494']
-    const pairAddresses = endPoints.join(',')
+const coinApi = async (coins) => {
     try {
+        // Fetch our tokens from the DB
+        const allCoins = await Coin.findAll({
+            attributes: ['token']
+        })
+        const endPoints = allCoins.map(coin => {
+            return coin.token
+        })
+        // Join token for the API
+        const pairAddresses = endPoints.join(',')
+
         const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + pairAddresses)
         let coinData = await response.json()
 
