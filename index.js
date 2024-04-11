@@ -60,10 +60,12 @@ passport.use(new LocalStrategy(
     }
 ));
 
+// serializeUser stores the user id in the session
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
+// deserialize user retrieves the whole user from the id stored in the session
 passport.deserializeUser(async (id, done) => {
     try {
         const user = await User.findByPk(id);
@@ -74,7 +76,6 @@ passport.deserializeUser(async (id, done) => {
 });
 
 
-app.use(passport.initialize());
 
 // =============== Passport End ==================
 
@@ -82,6 +83,8 @@ app.use(passport.initialize());
 app.use(session({
     secret: process.env.SESSION_SECRET
 }));
+// * To correctly serialize and deserialize our user so they are stored in req.session. We need to initialize passport AFTER our session middleware
+app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
