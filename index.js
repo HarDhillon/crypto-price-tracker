@@ -1,8 +1,14 @@
 // ============== Start Require ==================
+require('dotenv').config();
+
 const express = require('express')
 const app = express()
 const port = 3000
 const path = require('path')
+
+const passport = require('passport')
+const LocalStrategy = require("passport-local").Strategy;
+const session = require('express-session')
 
 const sequelize = require('./util/database')
 const Coin = require('./models/coin')
@@ -13,6 +19,7 @@ const { coinApi, fetchCoinsFromDB } = require('./api/coinApi');
 
 
 const coinRoutes = require('./routes/coin')
+const authRoutes = require('./routes/auth')
 const errorController = require('./controllers/error')
 
 
@@ -27,6 +34,58 @@ app.use(express.urlencoded({ extended: false }))
 // Static files
 app.use(express.static(path.join(__dirname, 'public')))
 
+
+// TODO Move passport into its own util file
+
+// =============== Passport Start ==================
+passport.use(new LocalStrategy(
+    async (username, password, done) => {
+        try {
+            const user = await User.findOne({ where: { username } });
+
+            if (!user) {
+                return done(null, false, { message: 'Incorrect username.' });
+            }
+
+            const isValidPassword = await user.validatePassword(password);
+
+            if (!isValidPassword) {
+                return done(null, false, { message: 'Incorrect password.' });
+            }
+
+            return done(null, user);
+        } catch (error) {
+            return done(error);
+        }
+    }
+));
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findByPk(id);
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+});
+
+
+app.use(passport.initialize());
+
+// =============== Passport End ==================
+
+// Sessions
+app.use(session({
+    secret: process.env.SESSION_SECRET
+}));
+app.use(passport.session());
+
+// Routes
+app.use(authRoutes)
 app.use(coinRoutes)
 
 // Any other routes not matching
