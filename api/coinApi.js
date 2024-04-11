@@ -1,15 +1,23 @@
 const io = require('../socket')
 const Coin = require('../models/coin')
 
-const coinApi = async (coins) => {
+let endPoints = [];
+
+// Function to fetch coins from the database
+const fetchCoinsFromDB = async () => {
     try {
-        // Fetch our tokens from the DB
         const allCoins = await Coin.findAll({
             attributes: ['token']
-        })
-        const endPoints = allCoins.map(coin => {
-            return coin.token
-        })
+        });
+        endPoints = allCoins.map(coin => coin.token);
+
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const coinApi = async (coins) => {
+    try {
         // Join token for the API
         const pairAddresses = endPoints.join(',')
 
@@ -35,4 +43,4 @@ const coinApi = async (coins) => {
     }
 }
 
-module.exports = { coinApi } 
+module.exports = { coinApi, fetchCoinsFromDB } 

@@ -9,6 +9,8 @@ const Coin = require('./models/coin')
 const User = require('./models/user')
 const UserCoin = require('./models/user-coin')
 
+const { coinApi, fetchCoinsFromDB } = require('./api/coinApi');
+
 
 const coinRoutes = require('./routes/coin')
 const errorController = require('./controllers/error')
@@ -37,7 +39,8 @@ app.use((error, req, res, next) => {
     res.redirect('/500')
 })
 
-const { coinApi } = require('./api/coinApi');
+// Initially get coins from Databse
+fetchCoinsFromDB()
 
 // Call coinApi every 2 second
 setInterval(async () => {
@@ -52,8 +55,8 @@ User.hasMany(Coin)
 Coin.belongsToMany(User, { through: UserCoin })
 
 // ! Dev only
-// sequelize.sync()
-sequelize.sync({ force: true })
+sequelize.sync()
+// sequelize.sync({ force: true })
 
 const server = app.listen(port)
 
