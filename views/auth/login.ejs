@@ -1,0 +1,17 @@
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <h1>Login</h1>
+   <form action="/login" method="POST">
+        <label>Username</label>
+        <input autofocus name="username" type="text" />
+        <br>
+        <label>Password</label>
+        <input name="password" type="password" />
+        
+        <button type="submit">Login</button>
+   </form>
+   <a href="/signup">Signup</a>
+</body>
+<%- include('../includes/end.ejs') %>
