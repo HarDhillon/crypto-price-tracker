@@ -112,8 +112,7 @@ setInterval(async () => {
         console.error('Error fetching coin data:', error);
     }
 }, 2000);
-
-User.hasMany(Coin)
+User.belongsToMany(Coin, { through: UserCoin })
 Coin.belongsToMany(User, { through: UserCoin })
 
 // ! Dev only

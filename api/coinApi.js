@@ -32,7 +32,7 @@ const coinApi = async (coins) => {
             }
         ));
 
-        console.log(updatedCoinData)
+        // console.log(updatedCoinData)
 
         // Update frontend on each poll
         console.log('emitted')
