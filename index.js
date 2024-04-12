@@ -3,7 +3,6 @@ require('dotenv').config();
 
 const express = require('express')
 const app = express()
-const port = 3000
 const path = require('path')
 
 const passport = require('passport')
@@ -125,7 +124,7 @@ Coin.belongsToMany(User, { through: UserCoin })
 sequelize.sync()
 // sequelize.sync({ force: true })
 
-const server = app.listen(port)
+const server = app.listen(process.env.PORT || 3000)
 
 const io = require('./socket').init(server)
 
