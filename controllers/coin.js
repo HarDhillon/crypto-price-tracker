@@ -9,37 +9,41 @@ exports.getIndex = async (req, res) => {
         // Get our coins from the coins variable
         const coins = returnCoins()
 
-        const endPoints = coins.map(coin => {
-            return coin.token
-        })
-        // Join token for the API
-        const pairAddresses = endPoints.join(',')
+        let coinData
 
-        // Do an initial fetch to get price
-        const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + pairAddresses)
-        apiQuery = await response.json()
+        if (coins.length > 1) {
+            const endPoints = coins.map(coin => {
+                return coin.token
+            })
+            // Join token for the API
+            const pairAddresses = endPoints.join(',')
 
-        // TODO store user coins in a variable when they login to only query once
-        user = req.user
-        const userCoins = await user.getCoins()
+            // Do an initial fetch to get price
+            const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + pairAddresses)
+            apiQuery = await response.json()
 
-        const coinData = apiQuery.pairs.map(coin => {
-            let buyPrice = null
+            // TODO store user coins in a variable when they login to only query once
+            user = req.user
+            const userCoins = await user.getCoins()
 
-            // If user holds that coin, set buy price
-            userCoins.forEach(item => {
-                if (item.token === coin.pairAddress) {
-                    buyPrice = item.userCoin.buyPrice
+            coinData = apiQuery.pairs.map(coin => {
+                let buyPrice = null
+
+                // If user holds that coin, set buy price
+                userCoins.forEach(item => {
+                    if (item.token === coin.pairAddress) {
+                        buyPrice = item.userCoin.buyPrice
+                    }
+                })
+
+                return {
+                    coinName: coin.baseToken.name,
+                    coinPrice: coin.priceUsd,
+                    coinToken: coin.pairAddress,
+                    buyPrice
                 }
             })
-
-            return {
-                coinName: coin.baseToken.name,
-                coinPrice: coin.priceUsd,
-                coinToken: coin.pairAddress,
-                buyPrice
-            }
-        })
+        }
 
         res.render('coins/index', {
             pageTitle: 'Coins',
