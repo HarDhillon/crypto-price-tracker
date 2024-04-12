@@ -1,4 +1,4 @@
-const { updateEndpoints, returnCoins } = require('../api/coinApi')
+const { fetchCoinsFromDatabase, returnCoins } = require('../api/coinApi')
 const Coin = require('../models/coin')
 const UserCoin = require('../models/user-coin')
 
@@ -11,7 +11,7 @@ exports.getIndex = async (req, res) => {
 
         let coinData
 
-        if (coins.length > 1) {
+        if (coins.length > 0) {
             const endPoints = coins.map(coin => {
                 return coin.token
             })
@@ -71,7 +71,7 @@ exports.postCoin = async (req, res) => {
         })
 
         // Once new coin is creted, we need to repopulate the variable being called in our coinApi
-        await updateEndpoints()
+        await fetchCoinsFromDatabase()
 
         res.redirect('/')
     }
