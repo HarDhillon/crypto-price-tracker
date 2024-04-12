@@ -27,13 +27,15 @@
 
                             <form action="/buy-coin" method="POST">
                                 <label>My Initial Buy Price</label>
-                                <input type="number"/>
+                                <input step="any" name="buyPrice" type="number"/>
+                                <input name="coinToken" type="hidden" value="<%= coin.pairAddress %>"/>
                                 <button>Buy</button>
                             </form>
                         </div>
                     <% } %>
                 <% } %>
             </div>
+            <br><br>
             <div>
                 <a href="/logout">Logout</a>
             </div>

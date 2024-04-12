@@ -8,4 +8,6 @@ router.get('/', ensureAuthenticated, coinController.getIndex)
 
 router.post('/add-coin', coinController.postCoin)
 
+router.post('/buy-coin', coinController.postBuyCoin)
+
 module.exports = router
