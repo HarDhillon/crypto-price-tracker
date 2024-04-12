@@ -7,9 +7,11 @@ const path = require('path')
 
 const passport = require('passport')
 const LocalStrategy = require("passport-local").Strategy;
-const session = require('express-session')
 
 const sequelize = require('./util/database')
+const session = require('express-session')
+var SequelizeStore = require("connect-session-sequelize")(session.Store);
+
 const Coin = require('./models/coin')
 const User = require('./models/user')
 const UserCoin = require('./models/user-coin')
@@ -78,7 +80,11 @@ passport.deserializeUser(async (id, done) => {
 
 // Sessions
 app.use(session({
-    secret: process.env.SESSION_SECRET
+    secret: process.env.SESSION_SECRET,
+    store: new SequelizeStore({
+        db: sequelize,
+    }),
+    resave: false,
 }));
 // * To correctly serialize and deserialize our user so they are stored in req.session. We need to initialize passport AFTER our session middleware
 app.use(passport.initialize());
