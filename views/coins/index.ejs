@@ -21,20 +21,25 @@
             <div>
                 <% if (coinData && coinData.length > 0) { %>
                     <% for (let coin of coinData) { %>
-                        <div>
-                            <h4 class="coin-name"><%= coin.coinName %></h4>
-                            <p class="coin-price">Current Price: $<%= coin.coinPrice %></p>
-
-                            <% if(coin.buyPrice) {%>
-                            <p>Bought at: $<%= coin.buyPrice %></p>
-                            <% } else{ %>
-                                <form action="/buy-coin" method="POST">
-                                    <label>Set Initial Buy Price</label>
-                                    <input step="any" name="buyPrice" type="number"/>
-                                    <input name="coinToken" type="hidden" value="<%= coin.coinToken %>"/>
-                                    <button>Buy</button>
-                                </form>
-                            <% } %>
+                        <div class="coin-data" style="display: flex;">
+                            <div>
+                                <h4 class="coin-name"><%= coin.coinName %></h4>
+                                <p>Current Price: $<span class="coin-price"><%= coin.coinPrice %></span></p>
+    
+                                <% if(coin.buyPrice) {%>
+                                <p>Bought at: $<span class="buy-price"><%= coin.buyPrice %></span></p>
+                                <% } else{ %>
+                                    <form action="/buy-coin" method="POST">
+                                        <label>Set Initial Buy Price</label>
+                                        <input step="any" name="buyPrice" type="number"/>
+                                        <input name="coinToken" type="hidden" value="<%= coin.coinToken %>"/>
+                                        <button>Buy</button>
+                                    </form>
+                                <% } %>
+                            </div>
+                            <div style="display: flex; flex-direction: column; justify-content: center; margin-left: 25px;">
+                                <p class="profit-loss-container">%<span class="profit-loss"></span></p>
+                            </div>
                         </div>
                     <% } %>
                 <% } %>

@@ -1,0 +1,8 @@
+.profit-loss-container{
+    &.up{
+        color: green;
+    }
+    &.down{
+        color: red;
+    }
+}
