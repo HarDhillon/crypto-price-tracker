@@ -34,7 +34,7 @@ const fetchCoinApi = async () => {
         let updatedCoinData = coinData.pairs.map(item => (
             {
                 name: item.baseToken.name,
-                price: 'Current Price: $' + item.priceUsd
+                price: item.priceUsd
             }
         ));
 

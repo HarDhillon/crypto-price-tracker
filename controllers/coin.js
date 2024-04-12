@@ -29,7 +29,6 @@ exports.getIndex = async (req, res) => {
             // If user holds that coin, set buy price
             userCoins.forEach(item => {
                 if (item.token === coin.pairAddress) {
-                    console.log(item.userCoin.buyPrice)
                     buyPrice = item.userCoin.buyPrice
                 }
             })
@@ -41,8 +40,6 @@ exports.getIndex = async (req, res) => {
                 buyPrice
             }
         })
-
-        console.log(coinData)
 
         res.render('coins/index', {
             pageTitle: 'Coins',
