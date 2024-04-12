@@ -34,14 +34,13 @@ const fetchCoinApi = async () => {
         let updatedCoinData = coinData.pairs.map(item => (
             {
                 name: item.baseToken.name,
-                price: '$' + item.priceUsd
+                price: 'Current Price: $' + item.priceUsd
             }
         ));
 
-        console.log(updatedCoinData)
+        // console.log(updatedCoinData)
 
         // Update frontend on each poll
-        // console.log('emitted')
         io.getIO().emit('coinDataUpdated', updatedCoinData);
     }
     catch (error) {

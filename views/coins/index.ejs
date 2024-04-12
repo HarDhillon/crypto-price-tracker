@@ -22,15 +22,19 @@
                 <% if (coinData && coinData.length > 0) { %>
                     <% for (let coin of coinData) { %>
                         <div>
-                            <h4 class="coin-name"><%= coin.baseToken.name %></h4>
-                            <p class="coin-price">$<%= coin.priceUsd %></p>
+                            <h4 class="coin-name"><%= coin.coinName %></h4>
+                            <p class="coin-price">Current Price: $<%= coin.coinPrice %></p>
 
-                            <form action="/buy-coin" method="POST">
-                                <label>My Initial Buy Price</label>
-                                <input step="any" name="buyPrice" type="number"/>
-                                <input name="coinToken" type="hidden" value="<%= coin.pairAddress %>"/>
-                                <button>Buy</button>
-                            </form>
+                            <% if(coin.buyPrice) {%>
+                            <p>Bought at: $<%= coin.buyPrice %></p>
+                            <% } else{ %>
+                                <form action="/buy-coin" method="POST">
+                                    <label>Set Initial Buy Price</label>
+                                    <input step="any" name="buyPrice" type="number"/>
+                                    <input name="coinToken" type="hidden" value="<%= coin.coinToken %>"/>
+                                    <button>Buy</button>
+                                </form>
+                            <% } %>
                         </div>
                     <% } %>
                 <% } %>
