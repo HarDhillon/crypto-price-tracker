@@ -22,8 +22,7 @@
         coinDataElements.forEach(element => {
             const currentPrice = parseFloat(element.querySelector('.coin-price').innerText)
             const buyPriceElement = element.querySelector('.buy-price')
-            const profitLossContainerElement = element.querySelector('.profit-loss-container')
-            const profitLossElement = element.querySelector('.profit-loss')
+            const profitLossElement = element.querySelector('.profit-loss-number')
 
             // If user has bought coin input field will be gone and buy price will be present
             if(buyPriceElement){
@@ -32,9 +31,9 @@
                 // Work out the % difference from when user bought to current
                 const percentDifference = ((currentPrice - buyPrice) / buyPrice) * 100
                 if(percentDifference > 0){
-                    profitLossContainerElement.classList.add('up')
+                    element.classList.add('up')
                 } else{
-                    profitLossContainerElement.classList.add('down')
+                    element.classList.add('down')
                 }
                 // Update our profit loss
                 profitLossElement.textContent = percentDifference.toFixed(4)
