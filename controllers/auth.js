@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs')
 
 const passport = require('passport');
 
+require('dotenv').config();
+
 exports.getSignup = async (req, res) => {
     res.render('auth/signup', {
         pageTitle: 'Signup'
@@ -11,13 +13,16 @@ exports.getSignup = async (req, res) => {
 
 exports.postSignup = async (req, res) => {
     try {
-        const { username, password } = req.body
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const { username, password, signupPassword } = req.body
 
-        await User.create({
-            username,
-            password: hashedPassword
-        })
+        if (signupPassword === process.env.SIGNUP_PASSWORD) {
+            const hashedPassword = await bcrypt.hash(password, 12)
+
+            await User.create({
+                username,
+                password: hashedPassword
+            })
+        }
 
         res.redirect('/login')
 
