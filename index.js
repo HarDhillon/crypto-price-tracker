@@ -15,8 +15,7 @@ const Coin = require('./models/coin')
 const User = require('./models/user')
 const UserCoin = require('./models/user-coin')
 
-const { coinApi, fetchCoinsFromDB } = require('./api/coinApi');
-
+const { fetchCoinApi, fetchCoinsFromDatabase } = require('./api/coinApi');
 
 const coinRoutes = require('./routes/coin')
 const authRoutes = require('./routes/auth')
@@ -35,8 +34,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
 
-// TODO Move passport into its own util file
-
+// TODO Move passport into its own file
 // =============== Passport Start ==================
 passport.use(new LocalStrategy(
     async (username, password, done) => {
@@ -101,17 +99,25 @@ app.use((error, req, res, next) => {
     res.redirect('/500')
 })
 
-// Initially get coins from Databse
-fetchCoinsFromDB()
+async function start() {
+    // Wait for updateEndpoints to run before starting the interval
+    await fetchCoinsFromDatabase();
 
-// Call coinApi every 2 second
-setInterval(async () => {
-    try {
-        await coinApi();
-    } catch (error) {
-        console.error('Error fetching coin data:', error);
-    }
-}, 2000);
+    // Start the interval after updateEndpoints has finished
+    setInterval(async () => {
+        try {
+            await fetchCoinApi();
+        } catch (error) {
+            console.error('Error fetching coin data:', error);
+        }
+    }, 2000);
+}
+
+// Call the start function to begin execution
+start();
+
+
+
 User.belongsToMany(Coin, { through: UserCoin })
 Coin.belongsToMany(User, { through: UserCoin })
 

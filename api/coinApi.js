@@ -1,12 +1,31 @@
 const io = require('../socket')
+const Coin = require('../models/coin');
 
-// let endPoints = [];
+// Variable to cache coins
+let allCoins = [];
+let cachedEndpoints = []
 
-const coinApi = async (allCoins) => {
+const fetchCoinsFromDatabase = async () => {
     try {
-        endPoints = allCoins.map(coin => coin.token);
+        // Fetch all coins from the database
+        allCoins = await Coin.findAll();
+        // Update our endpoints so that api doesnt have to run the map every time
+        cachedEndpoints = allCoins.map(coin => coin.token);
+
+    } catch (error) {
+        console.error('Error updating endpoints:', error);
+    }
+};
+
+const returnCoins = () => {
+    return allCoins
+}
+
+const fetchCoinApi = async () => {
+    try {
+
         // Join token for the API
-        const pairAddresses = endPoints.join(',')
+        const pairAddresses = cachedEndpoints.join(',')
 
         const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + pairAddresses)
         let coinData = await response.json()
@@ -30,4 +49,4 @@ const coinApi = async (allCoins) => {
     }
 }
 
-module.exports = coinApi
+module.exports = { fetchCoinApi, fetchCoinsFromDatabase, returnCoins }
