@@ -5,6 +5,16 @@
     border-radius: 4px;
     transition: background-color 0.5s;
     text-decoration: none;
+    color: black;
+
+    &:hover{
+        cursor: pointer;
+    }
+
+    &.login-button{
+        background-color: white;
+        margin-bottom: 30px;
+    }
 
     &.logout-button{
         color: black;
