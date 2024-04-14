@@ -9,6 +9,13 @@ exports.getIndex = async (req, res) => {
 
         let coinData
 
+        let message = req.flash('error')
+        if (message.length > 0) {
+            message = message[0]
+        } else {
+            message = null
+        }
+
         if (coins.length > 0) {
             const endPoints = coins.map(coin => {
                 return coin.token
@@ -16,7 +23,7 @@ exports.getIndex = async (req, res) => {
             // Join token for the API
             const pairAddresses = endPoints.join(',')
 
-            // Do an initial fetch to get price
+            // Do an initial fetch of our coins
             const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + pairAddresses)
             apiQuery = await response.json()
 
@@ -24,6 +31,7 @@ exports.getIndex = async (req, res) => {
             user = req.user
             const userCoins = await user.getCoins()
 
+            // For each coin fetched
             coinData = apiQuery.pairs.map(coin => {
                 let buyPrice = null
                 let coinId = null
@@ -40,7 +48,7 @@ exports.getIndex = async (req, res) => {
                     coinPrice: coin.priceUsd,
                     coinToken: coin.pairAddress,
                     buyPrice,
-                    id: coinId
+                    id: coinId,
                 }
             })
         }
@@ -48,7 +56,8 @@ exports.getIndex = async (req, res) => {
         res.render('coins/index', {
             pageTitle: 'Retirement Fund',
             coinData: coinData,
-            userBuyPrice: ''
+            userBuyPrice: '',
+            message
         })
     }
     catch (error) {
@@ -77,7 +86,8 @@ exports.postCoin = async (req, res, next) => {
         res.redirect('/')
     }
     catch (err) {
-        next(err)
+        req.flash('error', 'Something went wrong with adding the coin. Try using the token address at the end of the dex screener url')
+        res.redirect('/')
     }
 }
 
