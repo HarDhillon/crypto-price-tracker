@@ -2,8 +2,6 @@ const { fetchCoinsFromDatabase, returnCoins } = require('../api/coinApi')
 const Coin = require('../models/coin')
 const UserCoin = require('../models/user-coin')
 
-// const endPoints = ['0xa7480aafa8ad2af3ce24ac6853f960ae6ac7f0c4', '0x35ca6a41252f7e0bccdc1d7b2d5b6e2e35a7b483', '0xef64da9c4840b2c88b2f73b79db3c4e51e27f53a', '0xdfee6698831ff2ec5d7f5080a4c9ae44e4e86494']
-
 exports.getIndex = async (req, res) => {
     try {
         // Get our coins from the coins variable
@@ -28,12 +26,12 @@ exports.getIndex = async (req, res) => {
 
             coinData = apiQuery.pairs.map(coin => {
                 let buyPrice = null
-
+                let coinId = null
                 // If user holds that coin, set buy price
                 userCoins.forEach(item => {
                     if (item.token === coin.pairAddress) {
                         buyPrice = item.userCoin.buyPrice
-                        id = item.id
+                        coinId = item.idsdsadsd
                     }
                 })
 
@@ -42,24 +40,25 @@ exports.getIndex = async (req, res) => {
                     coinPrice: coin.priceUsd,
                     coinToken: coin.pairAddress,
                     buyPrice,
-                    id
+                    id: coinId
                 }
             })
         }
 
         res.render('coins/index', {
-            pageTitle: 'Coins',
+            pageTitle: 'Retirement Fund',
             coinData: coinData,
             userBuyPrice: ''
         })
     }
     catch (error) {
-        throw new Error(error)
+        next(error)
     }
 }
 
-exports.postCoin = async (req, res) => {
+exports.postCoin = async (req, res, next) => {
     const tokenAddress = req.body.tokenAddress
+    console.log(tokenAddress)
     try {
         const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + tokenAddress)
         const coinData = await response.json()
@@ -78,7 +77,7 @@ exports.postCoin = async (req, res) => {
         res.redirect('/')
     }
     catch (err) {
-        throw new Error(err)
+        next(err)
     }
 }
 
@@ -95,7 +94,7 @@ exports.postBuyCoin = async (req, res) => {
         res.status(200).redirect('/')
 
     } catch (err) {
-        throw new Error(err)
+        next(error)
     }
 }
 
@@ -113,6 +112,6 @@ exports.deleteBuyPrice = async (req, res) => {
 
         res.redirect('/')
     } catch (err) {
-        throw new Error(err)
+        next(error)
     }
 }
