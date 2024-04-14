@@ -24,4 +24,14 @@
             background-color: #F68D8D;
         }
     }
+
+    &.remove-price-button{
+        background-color: transparent;
+        border: none;
+        display: flex;
+        padding: 0;
+        position: relative;
+        top: 13px;
+        left: 7px;
+    }
 }

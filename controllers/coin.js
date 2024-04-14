@@ -33,6 +33,7 @@ exports.getIndex = async (req, res) => {
                 userCoins.forEach(item => {
                     if (item.token === coin.pairAddress) {
                         buyPrice = item.userCoin.buyPrice
+                        id = item.id
                     }
                 })
 
@@ -40,7 +41,8 @@ exports.getIndex = async (req, res) => {
                     coinName: coin.baseToken.name,
                     coinPrice: coin.priceUsd,
                     coinToken: coin.pairAddress,
-                    buyPrice
+                    buyPrice,
+                    id
                 }
             })
         }
@@ -92,6 +94,24 @@ exports.postBuyCoin = async (req, res) => {
 
         res.status(200).redirect('/')
 
+    } catch (err) {
+        throw new Error(err)
+    }
+}
+
+exports.deleteBuyPrice = async (req, res) => {
+    const { coinId } = req.body
+    userId = req.user.id
+
+    try {
+        await UserCoin.destroy({
+            where: {
+                userId: userId,
+                coinId: coinId
+            }
+        })
+
+        res.redirect('/')
     } catch (err) {
         throw new Error(err)
     }

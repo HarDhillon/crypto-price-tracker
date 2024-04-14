@@ -50,6 +50,9 @@
   margin-top: 0;
   margin-bottom: 10px;
 }
+.card-container .card .buy-price-wrapper {
+  display: flex;
+}
 
 .form label, .form input {
   display: block;
@@ -115,6 +118,15 @@
 }
 .button.logout-button:hover {
   background-color: #F68D8D;
+}
+.button.remove-price-button {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  padding: 0;
+  position: relative;
+  top: 13px;
+  left: 7px;
 }
 
 body {
