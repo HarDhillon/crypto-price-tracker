@@ -2,7 +2,7 @@ const { fetchCoinsFromDatabase, returnCoins } = require('../api/coinApi')
 const Coin = require('../models/coin')
 const UserCoin = require('../models/user-coin')
 
-exports.getIndex = async (req, res) => {
+exports.getIndex = async (req, res, next) => {
     try {
         // Get our coins from the coins variable
         const coins = returnCoins()
@@ -39,7 +39,7 @@ exports.getIndex = async (req, res) => {
                 userCoins.forEach(item => {
                     if (item.token === coin.pairAddress) {
                         buyPrice = item.userCoin.buyPrice
-                        coinId = item.idsdsadsd
+                        coinId = item.id
                     }
                 })
 
@@ -91,7 +91,7 @@ exports.postCoin = async (req, res, next) => {
     }
 }
 
-exports.postBuyCoin = async (req, res) => {
+exports.postBuyCoin = async (req, res, next) => {
 
     const { buyPrice, coinToken } = req.body
 
@@ -108,7 +108,7 @@ exports.postBuyCoin = async (req, res) => {
     }
 }
 
-exports.deleteBuyPrice = async (req, res) => {
+exports.deleteBuyPrice = async (req, res, next) => {
     const { coinId } = req.body
     userId = req.user.id
 
