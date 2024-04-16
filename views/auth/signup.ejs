@@ -2,18 +2,20 @@
 </head>
 
 <body>
-    <h1>Signup</h1>
-   <form action="/signup" method="POST">
-        <label>Username</label>
-        <input autofocus name="username" type="text" />
-        <br>
-        <label>Password</label>
-        <input name="password" type="password" />
-        <br><br>
-        <label>Signup Code</label>
-        <input name="signupPassword" type="password"/>
-
-        <button type="submit">Sign Up</button>
-   </form>
+     <div class="container">
+          <h1>Signup</h1>
+         <form class="form" action="/signup" method="POST">
+              <label>Username</label>
+              <input autofocus name="username" type="text" />
+              <br>
+              <label>Password</label>
+              <input name="password" type="password" />
+              <br>
+              <label>Signup Code</label>
+              <input name="signupPassword" type="password"/>
+               <br>
+              <button class="button" type="submit">Sign Up</button>
+         </form>
+     </div>
 </body>
 <%- include('../includes/end.ejs') %>
