@@ -27,7 +27,7 @@
         }
 
         &.up{
-            background-color: rgba(47, 255, 0, 0.05);
+            background-color: rgba(47, 255, 0, 0.2);
 
             .profit-loss{
                 color: green;
@@ -38,7 +38,7 @@
             }
         }
         &.down{
-            background-color: rgba(255, 0, 0, 0.05);
+            background-color: rgba(255, 0, 0, 0.2);
             .profit-loss{
                 color: red;
 

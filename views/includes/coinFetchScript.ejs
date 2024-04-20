@@ -4,22 +4,26 @@
 <script>
     const socket = io();
     socket.on('coinDataUpdated', (updatedCoinData) => {
-        // Update all elements with class name 'coin-name' with data.coinName
-        const coinNameElements = document.querySelectorAll('.coin-name');
-        coinNameElements.forEach((element, index) => {
-            element.textContent = updatedCoinData[index].name;
-        });
-
-        // Update all elements with class name 'coin-price' with data.coinPrice
-        const coinPriceElements = document.querySelectorAll('.coin-price');
-        coinPriceElements.forEach((element, index) => {
-            element.textContent = updatedCoinData[index].price
-        });
+ 
 
         // Find overarching coin data div
         const coinDataElements = document.querySelectorAll('.coin-data');
 
-        coinDataElements.forEach(element => {
+        // If a new coin is added, refresh the page
+        // The API returns coins in a strange order TODO: check what it uses to determine returning order
+        if(coinDataElements.length !== updatedCoinData.length){
+            location.reload()
+        }
+
+        coinDataElements.forEach((element, index) => {
+
+            // Update 
+            const coinNameElement = element.querySelector('.coin-name');
+            const coinPriceElement = element.querySelector('.coin-price');
+            
+            coinNameElement.textContent = updatedCoinData[index].name;
+            coinPriceElement.textContent = updatedCoinData[index].price
+
             const currentPrice = parseFloat(element.querySelector('.coin-price').innerText)
             const buyPriceElement = element.querySelector('.buy-price')
             const profitLossElement = element.querySelector('.profit-loss-number')
