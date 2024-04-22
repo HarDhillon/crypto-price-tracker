@@ -11,12 +11,14 @@
 
         coinDataElements.forEach((element, index) => {
 
-            // Update 
-            const coinNameElement = element.querySelector('.coin-name');
+            const coinName = element.querySelector('.coin-name').textContent;
             const coinPriceElement = element.querySelector('.coin-price');
             
-            coinNameElement.textContent = updatedCoinData[index].name;
-            coinPriceElement.textContent = updatedCoinData[index].price
+            // Update current price if the name of coin is the same as the updated information recieved
+            if(coinName in updatedCoinData){
+                console.log(updatedCoinData)
+                coinPriceElement.textContent = updatedCoinData[coinName]
+            }
 
             const currentPrice = parseFloat(element.querySelector('.coin-price').innerText)
             const buyPriceElement = element.querySelector('.buy-price')

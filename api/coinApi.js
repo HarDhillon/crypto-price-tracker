@@ -36,15 +36,18 @@ const fetchCoinApi = async () => {
             // updatedCoinData is an array of objects
             let updatedCoinData = coinData.pairs.map(item => (
                 {
-                    name: item.baseToken.name,
-                    price: item.priceUsd
+                    [item.baseToken.name]: item.priceUsd
+
                 }
             ));
-
-            // console.log(updatedCoinData)
+            // Convert our data into a single object that looks like
+            // {
+            //  Name of Coin: 500
+            // }
+            const coinObject = Object.assign({}, ...updatedCoinData)
 
             // Update frontend on each poll
-            io.getIO().emit('coinDataUpdated', updatedCoinData);
+            io.getIO().emit('coinDataUpdated', coinObject);
         }
     }
     catch (error) {

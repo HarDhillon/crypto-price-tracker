@@ -1,3 +1,4 @@
+const { error } = require('console')
 const { fetchCoinsFromDatabase, returnCoins } = require('../api/coinApi')
 const Coin = require('../models/coin')
 const UserCoin = require('../models/user-coin')
@@ -50,6 +51,7 @@ exports.getIndex = async (req, res, next) => {
                             coinPrice: coin.priceUsd,
                             coinId,
                             coinToken: coin.pairAddress,
+                            userCoinId: userCoin.userCoin.id,
                             buyPrice: userCoin.userCoin.buyPrice || null,
                         }
                     )
@@ -75,8 +77,8 @@ exports.getIndex = async (req, res, next) => {
             message
         })
     }
-    catch (error) {
-        next(error)
+    catch (err) {
+        next(err)
     }
 }
 
@@ -130,7 +132,7 @@ exports.postBuyCoin = async (req, res, next) => {
         res.status(200).redirect('/')
 
     } catch (err) {
-        next(error)
+        next(err)
     }
 }
 
@@ -139,15 +141,27 @@ exports.deleteBuyPrice = async (req, res, next) => {
     userId = req.user.id
 
     try {
-        await UserCoin.destroy({
-            where: {
-                userId: userId,
-                coinId: coinId
-            }
+        await UserCoin.update({ buyPrice: null }, {
+            where: { userId: userId, coinId: coinId }
         })
 
         res.redirect('/')
     } catch (err) {
-        next(error)
+        next(err)
     }
+}
+
+exports.deleteCoinTrack = async (req, res, next) => {
+    try {
+        const userCoinId = req.body.userCoinId
+
+        await UserCoin.destroy({ where: { id: userCoinId } })
+
+        res.redirect('/')
+
+    } catch (err) {
+        next(err)
+    }
+
+
 }

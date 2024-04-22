@@ -13,4 +13,6 @@ router.post('/buy-coin', coinController.postBuyCoin)
 // TODO user router.delete when  we create front end OR use JS to post the form with DELETE
 router.post('/remove-buy', coinController.deleteBuyPrice)
 
+router.post('/remove-coin-track', coinController.deleteCoinTrack)
+
 module.exports = router
