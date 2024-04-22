@@ -86,6 +86,7 @@ app.use(session({
         db: sequelize,
     }),
     resave: false,
+    saveUninitialized: false
 }));
 app.use(flash());
 

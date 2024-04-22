@@ -9,12 +9,6 @@
         // Find overarching coin data div
         const coinDataElements = document.querySelectorAll('.coin-data');
 
-        // If a new coin is added, refresh the page
-        // The API returns coins in a strange order TODO: check what it uses to determine returning order
-        if(coinDataElements.length !== updatedCoinData.length){
-            location.reload()
-        }
-
         coinDataElements.forEach((element, index) => {
 
             // Update 
