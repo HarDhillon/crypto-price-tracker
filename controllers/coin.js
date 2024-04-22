@@ -7,8 +7,7 @@ exports.getIndex = async (req, res, next) => {
         // Get our coins from the coins variable
         const coins = returnCoins()
 
-        let coinData
-
+        // Show flash errors if exist
         let message = req.flash('error')
         if (message.length > 0) {
             message = message[0]
@@ -16,6 +15,10 @@ exports.getIndex = async (req, res, next) => {
             message = null
         }
 
+        let userCoinData = []
+        let otherTrackedCoins = []
+
+        // If there are coins being tracked
         if (coins.length > 0) {
             const endPoints = coins.map(coin => {
                 return coin.token
@@ -27,36 +30,48 @@ exports.getIndex = async (req, res, next) => {
             const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + pairAddresses)
             apiQuery = await response.json()
 
-            // TODO store user coins in a variable when they login to only query once
+            // TODO store user coins in a cache when they login to only query once
             user = req.user
             const userCoins = await user.getCoins()
 
             // For each coin fetched
-            coinData = apiQuery.pairs.map(coin => {
-                let buyPrice = null
-                let coinId = null
-                // If user holds that coin, set buy price
-                userCoins.forEach(item => {
-                    if (item.token === coin.pairAddress) {
-                        buyPrice = item.userCoin.buyPrice
-                        coinId = item.id
-                    }
-                })
+            apiQuery.pairs.forEach(coin => {
+                // Check if user holds that coin
+                const userCoin = userCoins.find(userCoin => userCoin.token === coin.pairAddress)
 
-                return {
-                    coinName: coin.baseToken.name,
-                    coinPrice: coin.priceUsd,
-                    coinToken: coin.pairAddress,
-                    buyPrice,
-                    id: coinId,
+                // Store coinId associated with that coin
+                const coinId = coins.find(coinDb => coinDb.token === coin.pairAddress)?.id || null;
+
+                // If user holds that coin add to our userCoin
+                if (userCoin) {
+                    userCoinData.push(
+                        {
+                            coinName: coin.baseToken.name,
+                            coinPrice: coin.priceUsd,
+                            coinId,
+                            coinToken: coin.pairAddress,
+                            buyPrice: userCoin.userCoin.buyPrice || null,
+                        }
+                    )
+                }
+                // Otherwise show as other coins
+                else {
+                    otherTrackedCoins.push(
+                        {
+                            coinName: coin.baseToken.name,
+                            coinPrice: coin.priceUsd,
+                            coinToken: coin.pairAddress,
+                            coinId
+                        }
+                    )
                 }
             })
         }
 
         res.render('coins/index', {
             pageTitle: 'Retirement Fund',
-            coinData: coinData,
-            userBuyPrice: '',
+            coinData: userCoinData,
+            otherTrackedCoins,
             message
         })
     }
@@ -66,26 +81,37 @@ exports.getIndex = async (req, res, next) => {
 }
 
 exports.postCoin = async (req, res, next) => {
-    const tokenAddress = req.body.tokenAddress
-    console.log(tokenAddress)
+    const { tokenAddress, coinId } = req.body
+    const user = req.user
+
     try {
-        const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + tokenAddress)
-        const coinData = await response.json()
+        if (tokenAddress) {
+            const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/' + tokenAddress)
+            const coinData = await response.json()
 
-        const name = coinData.pairs[0].baseToken.name
-        const token = coinData.pairs[0].pairAddress
+            const name = coinData.pairs[0].baseToken.name
+            const token = coinData.pairs[0].pairAddress
 
-        await Coin.create({
-            name,
-            token
-        })
+            const newCoin = await Coin.create({
+                name,
+                token
+            })
 
-        // Once new coin is creted, we need to repopulate the variable being called in our coinApi
-        await fetchCoinsFromDatabase()
+            await user.addCoin(newCoin)
+
+            // Once new coin is creted, we need to repopulate the variable being called in our coinApi
+            await fetchCoinsFromDatabase()
+
+        } else if (coinId) {
+            const coin = await Coin.findOne({ where: { id: coinId } })
+            console.log('hi')
+            await user.addCoin(coin)
+        }
 
         res.redirect('/')
     }
     catch (err) {
+        console.log(err)
         req.flash('error', 'Something went wrong with adding the coin. Try using the token address at the end of the dex screener url')
         res.redirect('/')
     }

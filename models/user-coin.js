@@ -10,7 +10,7 @@ const UserCoin = sequelize.define('userCoin', {
     },
     buyPrice: {
         type: Sequelize.DOUBLE,
-        allowNull: false
+        allowNull: true,
     }
 })
 
