@@ -33,6 +33,7 @@
                                     <h4 class="card-title coin-name"><%= coin.coinName %></h4>
                                     <form class="remove-coin-form" action="/remove-coin-track" method="POST">
                                         <input name="userCoinId" value="<%= coin.userCoinId %>" type="hidden" />
+                                        <input name="coinId" type="hidden" value="<%= coin.coinId %>"/>
                                         <button class="button remove-coin-button" type="submit">
                                             <svg fill="#C41E3A" height="12px" width="12px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                 viewBox="0 0 460.775 460.775" xml:space="preserve">

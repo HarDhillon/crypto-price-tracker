@@ -1,4 +1,3 @@
-const { error } = require('console')
 const { fetchCoinsFromDatabase, returnCoins } = require('../api/coinApi')
 const Coin = require('../models/coin')
 const UserCoin = require('../models/user-coin')
@@ -106,7 +105,6 @@ exports.postCoin = async (req, res, next) => {
 
         } else if (coinId) {
             const coin = await Coin.findOne({ where: { id: coinId } })
-            console.log('hi')
             await user.addCoin(coin)
         }
 
@@ -153,9 +151,21 @@ exports.deleteBuyPrice = async (req, res, next) => {
 
 exports.deleteCoinTrack = async (req, res, next) => {
     try {
-        const userCoinId = req.body.userCoinId
+        const { userCoinId, coinId } = req.body
 
         await UserCoin.destroy({ where: { id: userCoinId } })
+
+        // Check if recently deleted coin is being tracked by any user
+        const coinTracked = await UserCoin.findOne({ where: { coinId: coinId } })
+
+        // If no user is tracking the coin anymore, remove the coin
+        if (!coinTracked) {
+            await Coin.destroy({ where: { id: coinId } })
+        }
+
+        // Re-fetch our coins to store in cache
+        fetchCoinsFromDatabase()
+
 
         res.redirect('/')
 
