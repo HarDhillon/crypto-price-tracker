@@ -6,6 +6,17 @@
     socket.on('coinDataUpdated', (updatedCoinData) => {
  
 
+        // Remove class from blinking dot so it can be added back again
+        const liveDotElements = document.querySelectorAll('.live-dot')
+
+        liveDotElements.forEach(element => { 
+            element.classList.remove('live-dot') 
+            setTimeout(() => {
+                element.classList.add('live-dot')
+            }, 10)
+        })
+
+
         // Find overarching coin data div
         const coinDataElements = document.querySelectorAll('.coin-data');
 
